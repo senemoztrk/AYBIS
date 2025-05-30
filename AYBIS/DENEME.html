@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AYBİS - Dashboard Sayfası</title>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    :root {
+      --primary-color: #003366;
+      --accent-color: #00aaff;
+      --bg-color: #f4f4f4;
+      --text-color: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 10px;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .service-card img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    #map {
+      height: 400px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .contact-form button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .contact-form button:hover {
+      background-color: #005499;
+    }
+
+    footer {
+      background-color: #eaeaea;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 14px;
+    }
+
+    .footer-icons a {
+      margin: 0 10px;
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+
+    .about-img {
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      nav a {
+        display: block;
+        margin: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+  <header>
+    <h1>AYBİS</h1>
+    <p>Afet Yönetim Bilgi Sistemi</p>
+    <nav>
+      <a href="register.html">KAYIT OL</a>
+      <a href="login.html">GİRİŞ</a>
+      <a href="#hakkinda">Hakkında</a>
+      <a href="#hizmetler">Hizmetler</a>
+      <a href="#harita">Harita</a>
+      <a href="#son-depremler">Son Depremler</a>
+      <a href="#iletisim">İletişim</a>
+      <a href="dashboard.html">Dashboard Sayfası</a>
+    </nav>
+  </header>
+
+  <section id="hakkinda">
+    <h2>Kurumsal</h2>
+    <p>AYBİS, afet anlarında hızlı veri toplama, analiz ve paylaşım süreçlerini yöneten ulusal bir dijital platformdur...</p>
+    <img src="https://images.unsplash.com/photo-1605470208470-8da8d0e9bfe6" alt="Afet Yönetimi" class="about-img">
+  </section>
+
+  <section id="hizmetler">
+    <h2>Hizmetler</h2>
+    <div class="services">
+      <!-- Kartlar buraya -->
+    </div>
+  </section>
+
+  <section id="harita">
+    <h2>Afet Noktaları</h2>
+    <p>Harita üzerinden toplanma ve müdahale alanlarını görebilirsiniz.</p>
+    <div id="map"></div>
+  </section>
+
+  <section id="son-depremler">
+    <h2>Son Depremler</h2>
+
+    <table id="deprem-tablosu" border="1" cellspacing="0" cellpadding="8" style="width:100%; margin-bottom: 30px; border-collapse: collapse;">
+      <thead style="background-color: #003366; color: white;">
+        <tr>
+          <th>Tarih</th>
+          <th>Lokasyon</th>
+          <th>Büyüklük</th>
+          <th>Derinlik</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="deprem-kartlari" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;"></div>
+  </section>
+
+  <section id="iletisim">
+    <h2>İletişim</h2>
+    <div class="contact-form">
+      <form>
+        <input type="text" placeholder="Adınız Soyadınız" required>
+        <input type="email" placeholder="E-posta adresiniz" required>
+        <textarea rows="5" placeholder="Mesajınız..." required></textarea>
+        <button type="submit">Gönder</button>
+      </form>
+    </div>
+    <p><strong>E-posta:</strong> <a href="mailto:info@aybis.gov.tr">info@aybis.gov.tr</a></p>
+    <p><strong>Adres:</strong> Türkiye Afet Yönetim Merkezi, Ankara</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AYBİS - Afet Yönetim Bilgi Sistemi. Tüm hakları saklıdır.</p>
+    <div class="footer-icons">
+      <a href="#"><i class="fab fa-facebook-square"></i></a>
+      <a href="#"><i class="fab fa-twitter-square"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([39.92077, 32.85411], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap katkıcıları'
+    }).addTo(map);
+
+    var markers = [
+      { ad: "Ankara Toplanma Noktası", koordinat: [39.92077, 32.85411] },
+      { ad: "İstanbul Acil Müdahale Merkezi", koordinat: [41.0082, 28.9784] },
+      { ad: "İzmir Koordinasyon Merkezi", koordinat: [38.4192, 27.1287] }
+    ];
+
+    markers.forEach(nokta => {
+      L.marker(nokta.koordinat).addTo(map).bindPopup(`<b>${nokta.ad}</b>`);
+    });
+  </script>
+
+  <!-- Kandilli API'den Deprem Verilerini Çeken Kod -->
+<script>
+  fetch("https://api.orhanaydogdu.com.tr/deprem/kandilli/ive")
+    .then(res => res.json())
+    .then(data => {
+      const tabloBody = document.querySelector("#deprem-tablosu tbody");
+      const kartlarDiv = document.getElementById("deprem-kartlari");
+
+      data.result.forEach(deprem => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${deprem.date}</td>
+          <td>${deprem.title}</td>
+          <td><strong>${deprem.mag}</strong></td>
+          <td>${deprem.depth} km</td>
+        `;
+        tabloBody.appendChild(tr);
+
+        
+      });
+    })
+    .catch(err => {
+      console.error("Deprem verileri alınamadı:", err);
+    });
+</script>
+
+
+</body>
+</html>

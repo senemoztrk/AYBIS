@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AYBİS | Afet Yönetim Portalı</title>
+  <link rel="icon" type="RESİMLER/x-icon" href="RESİMLER/AFET YÖNETİM BİLGİ SİSTEMİ kopyası.jpg">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+  <!-- ApexCharts CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.css">
+  
+
+
+  <style>
+    :root {
+      --primary-color: #003366;
+      --primary-light: #0055a5;
+      --accent-color: #00aaff;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --success-color: #2ecc71;
+      --bg-color: #f8fafc;
+      --text-color: #34495e;
+      --light-gray: #ecf0f1;
+      --dark-gray: #95a5a6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    /* Header Styles */
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      
+    }
+
+    .logo img {
+      height: 150px;
+      width: 150px;
+    }
+
+    .logo-text h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .logo-text p {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-left: 1.5rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+
+    .nav-links a i {
+      font-size: 0.9rem;
+    }
+
+    .auth-buttons .btn {
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-light {
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: white;
+    }
+
+    .btn-outline-light:hover {
+      background: white;
+      color: var(--primary-color);
+    }
+
+    .btn-accent {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+    }
+
+    .btn-accent:hover {
+      background: #0099ee;
+    }
+    
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    /* bağış butonu*/
+    
+     .donate-button {
+      background-color: #28a745; 
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 0.1s ease;
+    }
+
+    .donate-button i {
+      margin-right: 2px;
+    }
+
+    .donate-button:hover {
+      background-color: #218838; 
+    }
+
+
+    /* Main Content */
+    main {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 20px;
+    }
+
+    section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-color);
+      display: inline-block;
+    }
+
+    /* About Section */
+    .about-content {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .about-text {
+      flex: 1;
+    }
+
+    .about-img {
+      flex: 1;
+      border-radius: 8px;
+      overflow: auto;
+      
+    }
+
+    .about-img img {
+      width: 50%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* Services Section */
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .service-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border-top: 3px solid var(--accent-color);
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-icon {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .service-card h3 {
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+    }
+
+    /* Map Section */
+    #map {
+      height: 500px;
+      border-radius: 8px;
+      margin-top: 1rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .map-container {
+      position: relative;
+    }
+
+    .map-controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 5px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Earthquakes Section */
+    .earthquake-tabs {
+      display: flex;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--light-gray);
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+      border-bottom-color: var(--accent-color);
+      color: var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* DataTable Styles */
+     body { font-family: Arial, sans-serif; padding: 20px; }
+     table { width: 100%; border-collapse: collapse; }
+
+    .dataTables_wrapper {
+      margin-top: 1rem;
+    }
+
+    .dataTables_filter input {
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      padding: 5px 10px 5px 30px;
+      background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2395a5a6" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 10px center;
+      transition: all 0.3s;
+    }
+
+    .dataTables_filter input:focus {
+      background-color: white;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.2);
+    }
+
+    table.dataTable {
+      border-collapse: collapse !important;
+    }
+
+    table.dataTable thead th {
+      background-color: var(--primary-color) !important;
+      color: white !important;
+      border-bottom: none !important;
+    }
+
+    table.dataTable tbody tr {
+      transition: all 0.2s ease;
+    }
+
+    table.dataTable tbody tr:hover {
+      background-color: rgba(0, 170, 255, 0.05) !important;
+    }
+
+    /* Earthquake Cards */
+    .earthquake-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .earthquake-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid var(--warning-color);
+      transition: all 0.3s ease;
+    }
+
+    .earthquake-card.critical {
+      border-left-color: var(--danger-color);
+    }
+
+    .earthquake-card.medium {
+      border-left-color: var(--warning-color);
+    }
+
+    .earthquake-card.low {
+      border-left-color: var(--success-color);
+    }
+
+    .earthquake-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .earthquake-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .earthquake-magnitude {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--danger-color);
+    }
+
+    .earthquake-location {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .earthquake-details {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .earthquake-detail {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--dark-gray);
+    }
+
+    /* Contact Section */
+    .contact-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .contact-icon {
+      font-size: 1.2rem;
+      color: var(--accent-color);
+      margin-top: 3px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.2);
+      outline: none;
+    }
+
+    .contact-form textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .contact-form button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      background-color: var(--primary-light);
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 3rem 0 1.5rem;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .footer-logo img {
+      height: 30px;
+      
+    }
+
+    .footer-logo-text h3 {
+      font-size: 1.2rem;
+    }
+
+    .footer-links h4 {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+
+    .footer-links ul {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--accent-color);
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .about-content {
+        flex-direction: column;
+      }
+      
+      .contact-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      .nav-links li {
+        margin: 0.5rem 0;
+      }
+      
+      .auth-buttons {
+        display: none;
+        width: 100%;
+        margin-top: 1rem;
+      }
+      
+      .auth-buttons.active {
+        display: flex;
+        justify-content: center;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      section {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .earthquake-tabs {
+        flex-direction: column;
+      }
+      
+      .tab-btn {
+        border-bottom: none;
+        border-left: 3px solid transparent;
+        text-align: left;
+      }
+      
+      .tab-btn.active {
+        border-bottom: none;
+        border-left-color: var(--accent-color);
+      }
+    }
+  </style>
+</head>
+<body>
+
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <img src="RESİMLER/AFET YÖNETİM BİLGİ SİSTEMİ kopyası.jpg" alt="AYBİS Logo">
+        <div class="logo-text">
+          
+        </div>
+      </div>
+      
+      <nav>
+        <ul class="nav-links">
+          <li><a href="güvendemiyim.html"><i class="fas fa-home"></i>Riskim? </a></li>
+          <li><a href="#harita"><i class="fas fa-map-marked-alt"></i> Harita</a></li>
+          <li><a href="#son-depremler" class="earthquake-link"><i class="fas fa-wave-square"></i> Depremler </a></li>
+          <li><a href="#iletisim"><i class="fas fa-envelope"></i> İletişim</a></li>
+          <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="HARİTA.html" class="disaster-link"><i class="fas fa-bell"></i> Anlık</a></li>
+          <li><a href="bagisyap.html" class="donate-button"><i class="fas fa-donate"></i> Bağış</a></li>
+
+
+        </ul>
+        
+        <div class="auth-buttons">
+          <a href="register.html" class="btn btn-outline-light"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
+          <a href="login.html" class="btn btn-accent"><i class="fas fa-sign-in-alt"></i> Giriş</a>
+          
+        </div>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- About Section -->
+    <section id="hakkinda">
+      <h2>Hakkımızda</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <p>AYBİS (Afet Yönetim Bilgi Sistemi), afet öncesi, sırası ve sonrasında etkin veri yönetimi sağlayan ulusal bir dijital platformdur. Sistemimiz, afet yönetim süreçlerinin tüm aşamalarında karar vericilere ve vatandaşlara kritik bilgiler sunar.</p>
+          <p>2023 yılında kurulan sistemimiz, Türkiye'nin afetlere hazırlık ve müdahale kapasitesini artırmak için geliştirilmiştir. Gerçek zamanlı veri toplama, analiz ve raporlama özellikleriyle afet yönetiminde yeni bir standart oluşturuyoruz.</p>
+          <div class="stats" style="display: flex; gap: 1.5rem; margin-top: 1.5rem;">
+            <div>
+              <h3 style="color: var(--primary-color); font-size: 2rem;">50+</h3>
+              <p>İş Ortağı</p>
+            </div>
+            <div>
+              <h3 style="color: var(--primary-color); font-size: 2rem;">24/7</h3>
+              <p>Kesintisiz Hizmet</p>
+            </div>
+            <div>
+              <h3 style="color: var(--primary-color); font-size: 2rem;">1M+</h3>
+              <p>Kullanıcı</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-img">
+          <img src="RESİMLER/GÖNÜLLÜ.jpg" alt="Afet Yönetimi">
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="hizmetler">
+      <h2>Hizmetlerimiz</h2>
+      <div class="services">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-bell"></i>
+          </div>
+          <h3>Erken Uyarı Sistemi</h3>
+          <p>Deprem, sel, yangın gibi afetler için gelişmiş erken uyarı sistemleri ile önceden bilgilendirme.</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-map-marked-alt"></i>
+          </div>
+          <h3>Gerçek Zamanlı Haritalama</h3>
+          <p>Afet bölgelerinin ve toplanma alanlarının gerçek zamanlı olarak haritalanması ve takibi.</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3>Ekip Koordinasyonu</h3>
+          <p>Afet müdahale ekiplerinin koordinasyonu ve kaynak yönetimi için özel araçlar.</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>Analiz ve Raporlama</h3>
+          <p>Afet verilerinin analizi ve detaylı raporların oluşturulması için gelişmiş araçlar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="harita">
+      <h2>Afet Haritası</h2>
+      <p>Gerçek zamanlı afet durumlarını, toplanma alanlarını ve müdahale noktalarını harita üzerinden takip edin.</p>
+      
+      <div class="map-container">
+        <div id="map"></div>
+        <div class="map-controls">
+          <button class="btn btn-sm btn-light" id="zoomToTurkey">
+            <i class="fas fa-globe-asia"></i> Türkiye
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Earthquakes Section -->
+    <section id="son-depremler">
+      <h2>Son Depremler</h2>
+      
+      <div class="earthquake-tabs">
+        <button class="tab-btn active" data-tab="table-view">Tablo Görünümü</button>
+        <button class="tab-btn" data-tab="card-view">Kart Görünümü</button>
+        
+      </div>
+      
+      <div class="tab-content active" id="table-view">
+        <table id="deprem-tablosu" class="table table-striped" style="width:100%">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Lokasyon</th>
+              <th>Büyüklük</th>
+              <th>Derinlik</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- DataTables will populate this -->
+             
+          </tbody>
+        </table>
+       <h2>Toplanma Alanları / Güvenli Bölgeler</h2>
+
+  <table id="toplanmaAlanlari" class="display">
+    <thead>
+      <tr>
+        <th>Alan Adı</th>
+        <th>İl / İlçe</th>
+        <th>Kapasite</th>
+        <th>Koordinatlar</th>
+        <th>Durum</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Merkez Park Alanı</td>
+        <td>İstanbul / Kadıköy</td>
+        <td>1500</td>
+        <td>40.9831, 29.0714</td>
+        <td>Kullanımda</td>
+      </tr>
+      <tr>
+        <td>Yenimahalle Lisesi Bahçesi</td>
+        <td>Ankara / Yenimahalle</td>
+        <td>800</td>
+        <td>39.9521, 32.8334</td>
+        <td>Bakımda</td>
+      </tr>
+      <tr>
+        <td>Sahil Spor Kompleksi</td>
+        <td>İzmir / Karşıyaka</td>
+        <td>1200</td>
+        <td>38.4746, 27.1161</td>
+        <td>Kullanımda</td>
+      </tr>
+      <tr>
+        <td>Belediye Otoparkı</td>
+        <td>Bursa / Osmangazi</td>
+        <td>600</td>
+        <td>40.1826, 29.0662</td>
+        <td>Ulaşılamıyor</td>
+      </tr>
+      <tr>
+  <td>Atatürk Stadyumu Açık Alanı</td>
+  <td>Adana / Seyhan</td>
+  <td>2000</td>
+  <td>37.0000, 35.3213</td>
+  <td>Kullanımda</td>
+</tr>
+<tr>
+  <td>İl Halk Kütüphanesi Bahçesi</td>
+  <td>Eskişehir / Tepebaşı</td>
+  <td>700</td>
+  <td>39.7767, 30.5206</td>
+  <td>Bakımda</td>
+</tr>
+<tr>
+  <td>Kapalı Spor Salonu Yanı</td>
+  <td>Trabzon / Ortahisar</td>
+  <td>900</td>
+  <td>41.0015, 39.7178</td>
+  <td>Kullanımda</td>
+</tr>
+<tr>
+  <td>Fuar Alanı Açık Park</td>
+  <td>Denizli / Merkezefendi</td>
+  <td>1300</td>
+  <td>37.7765, 29.0864</td>
+  <td>Ulaşılamıyor</td>
+</tr>
+<tr>
+  <td>Şehir Hastanesi Otoparkı</td>
+  <td>Gaziantep / Şahinbey</td>
+  <td>1600</td>
+  <td>37.0662, 37.3833</td>
+  <td>Kullanımda</td>
+</tr>
+<tr>
+  <td>Adliye Yanı Boş Alan</td>
+  <td>Konya / Selçuklu</td>
+  <td>1100</td>
+  <td>37.8746, 32.4932</td>
+  <td>Bakımda</td>
+</tr>
+<tr>
+  <td>Festival Alanı</td>
+  <td>Samsun / İlkadım</td>
+  <td>1400</td>
+  <td>41.2867, 36.3334</td>
+  <td>Kullanımda</td>
+</tr>
+<tr>
+  <td>Belediye Hizmet Binası Bahçesi</td>
+  <td>Çanakkale / Merkez</td>
+  <td>750</td>
+  <td>40.1472, 26.4142</td>
+  <td>Ulaşılamıyor</td>
+</tr>
+<tr>
+  <td>Kaymakamlık Yanı Park Alanı</td>
+  <td>Muğla / Bodrum</td>
+  <td>850</td>
+  <td>37.0344, 27.4305</td>
+  <td>Kullanımda</td>
+</tr>
+<tr>
+  <td>Mezarlık Altı Açık Alan</td>
+  <td>Erzurum / Yakutiye</td>
+  <td>500</td>
+  <td>39.9043, 41.2679</td>
+  <td>Bakımda</td>
+</tr>
+
+    </tbody>
+  </table>
+
+        
+      </div>
+      
+      <div class="tab-content" id="card-view">
+        <div class="earthquake-cards" id="deprem-kartlari">
+          <!-- Cards will be populated by JavaScript -->
+        </div>
+      </div>
+      
+      <div class="tab-content" id="chart-view">
+        <div id="earthquake-chart" style="height: 400px;"></div>
+      </div>
+      
+      
+    </section>
+
+    <!-- Contact Section -->
+    <section id="iletisim">
+      <h2>İletişim</h2>
+      <div class="contact-container">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div>
+              <h3>E-posta</h3>
+              <p><a href="mailto:info@aybis.gov.tr">info@aybis.gov.tr</a></p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-phone-alt"></i>
+            </div>
+            <div>
+              <h3>Telefon</h3>
+              <p>0 312 123 45 67</p>
+              <p>7/24 Acil Destek Hattı: 0 850 123 45 67</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div>
+              <h3>Adres</h3>
+              <p>Türkiye Afet Yönetim Merkezi, Üniversiteler Mahallesi, Dumlupınar Bulvarı No:159, 06800 Çankaya/Ankara</p>
+            </div>
+          </div>
+          
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        
+        <div class="contact-form">
+          <form id="contactForm">
+            <input type="text" placeholder="Adınız Soyadınız" required>
+            <input type="email" placeholder="E-posta Adresiniz" required>
+            <input type="text" placeholder="Konu">
+            <textarea placeholder="Mesajınız..." required></textarea>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Mesaj Gönder</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-logo">
+          <img src="RESİMLER/AFET YÖNETİM BİLGİ SİSTEMİ kopyası.jpg" alt="AYBİS Logo">
+          <div class="footer-logo-text">
+            <h3>AYBİS</h3>
+            <p>Afet Yönetim Bilgi Sistemi</p>
+          </div>
+        </div>
+        <p>Türkiye'nin afet yönetiminde dijital dönüşüm platformu.</p>
+      </div>
+      
+      <div class="footer-col">
+        <h4>Hızlı Linkler</h4>
+        <ul class="footer-links">
+          <li><a href="#hakkinda">Hakkımızda</a></li>
+          <li><a href="#hizmetler">Hizmetler</a></li>
+          <li><a href="#harita">Afet Haritası</a></li>
+          <li><a href="#son-depremler">Son Depremler</a></li>
+          <li><a href="#iletisim">İletişim</a></li>
+          
+        </ul>
+      </div>
+      
+      <div class="footer-col">
+        <h4>Yararlı Linkler</h4>
+        <ul class="footer-links">
+          <li><a href="https://www.afad.gov.tr/">AFAD</a></li>
+          <li><a href="http://www.koeri.boun.edu.tr/scripts/lst7.asp">Kandilli Rasathanesi</a></li>
+          <li><a href="https://www.mgm.gov.tr/tahmin/turkiye.aspx">Meteoroloji Genel Müdürlüğü</a></li>
+          <li><a href="https://www.icisleri.gov.tr/">İçişleri Bakanlığı</a></li>
+          <li><a href="https://ashgmafetacildb.saglik.gov.tr/TR-80255/ulusal-medikal-kurtarma-ekibi-birimi-umke.html">UMKE</a></li>
+        </ul>
+      </div>
+      
+     
+    </div>
+    
+    <div class="copyright">
+      <p>&copy; 2025 AYBİS - Afet Yönetim Bilgi Sistemi. Tüm hakları saklıdır.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  
+
+
+  <script>
+    
+    // Mobile Menu Toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.toggle('active');
+      document.querySelector('.auth-buttons').classList.toggle('active');
+    });
+
+    // Tab Functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons and content
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked button and corresponding content
+        btn.classList.add('active');
+        const tabId = btn.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Initialize Map
+    const map = L.map('map').setView([39.92077, 32.85411], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add markers for disaster points
+    const markers = [
+    
+  {
+    ad: "Ankara Toplanma Noktası",
+    koordinat: [39.92077, 32.85411],
+    type: "toplanma",
+    aciklama: "Ankara'nın merkezinde bulunan ana toplanma alanı. Kapasite: 5000 kişi."
+  },
+  {
+    ad: "İstanbul Kadıköy Fenerbahçe Parkı",
+    koordinat: [40.9801, 29.0418],
+    type: "toplanma",
+    aciklama: "Kadıköy ilçesinde yer alan geniş açık alan. Deprem sonrası toplanma için uygundur."
+  },
+  {
+    ad: "İstanbul Beşiktaş Yıldız Parkı",
+    koordinat: [41.0452, 29.0124],
+    type: "toplanma",
+    aciklama: "Beşiktaş ilçesinde büyük bir yeşil alan. Afet sonrası barınma için uygundur."
+  },
+  {
+    ad: "İzmir Gündoğdu Meydanı",
+    koordinat: [38.4282, 27.1287],
+    type: "toplanma",
+    aciklama: "İzmir'in merkezi toplanma alanlarından biri. Geniş açık alan."
+  },
+  {
+    ad: "Bursa Kültürpark",
+    koordinat: [40.1870, 29.0665],
+    type: "toplanma",
+    aciklama: "Bursa merkezde afet sonrası kullanılabilecek güvenli alan."
+  },
+  {
+    ad: "Erzincan Deprem Risk Bölgesi",
+    koordinat: [39.7466, 39.4914],
+    type: "risk",
+    aciklama: "Yüksek deprem riski bulunan bölge. Afet öncesi önlem alınmalıdır."
+  },
+  {
+    ad: "Rize Sel Risk Bölgesi",
+    koordinat: [41.0201, 40.5234],
+    type: "risk",
+    aciklama: "Sel riski yüksek olan doğu Karadeniz bölgesinde kritik bir alan."
+  },
+  {
+    ad: "İstanbul Acil Müdahale Merkezi",
+    koordinat: [41.0082, 28.9784],
+    type: "mudahale",
+    aciklama: "İstanbul'daki ana müdahale merkezi. 7/24 aktif hizmet verir."
+  },
+  {
+    ad: "Antalya Konyaaltı Toplanma Alanı",
+    koordinat: [36.8701, 30.6759],
+    type: "toplanma",
+    aciklama: "Denize yakın, geniş açık alanda bulunan güvenli bölge."
+  },
+  {
+    ad: "Diyarbakır Koordinasyon Merkezi",
+    koordinat: [37.9144, 40.2306],
+    type: "koordinasyon",
+    aciklama: "Güneydoğu Anadolu afet koordinasyon merkezi olarak işlev görür."
+  }
+];
+
+    // Custom icons
+    const toplanmaIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    const mudahaleIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    const koordinasyonIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    const riskIcon = L.icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    markers.forEach(nokta => {
+      let icon;
+      switch(nokta.type) {
+        case 'toplanma':
+          icon = toplanmaIcon;
+          break;
+        case 'mudahale':
+          icon = mudahaleIcon;
+          break;
+        case 'koordinasyon':
+          icon = koordinasyonIcon;
+          break;
+        case 'risk':
+          icon = riskIcon;
+          break;
+        default:
+          icon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+          });
+      }
+
+      L.marker(nokta.koordinat, {icon: icon}).addTo(map)
+        .bindPopup(`
+          <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">${nokta.ad}</h3>
+          <p style="margin-bottom: 0.5rem;">${nokta.aciklama}</p>
+          <small style="color: var(--dark-gray);">Koordinatlar: ${nokta.koordinat[0].toFixed(4)}, ${nokta.koordinat[1].toFixed(4)}</small>
+        `);
+    });
+
+    // Zoom to Turkey button
+    document.getElementById('zoomToTurkey').addEventListener('click', function() {
+      map.setView([39.0, 35.0], 6);
+    });
+
+    // Fetch earthquake data from Kandilli API
+    async function fetchEarthquakeData() {
+      try {
+        const response = await fetch("https://api.orhanaydogdu.com.tr/deprem/kandilli/live");
+        const data = await response.json();
+        
+        if (!data.result || data.result.length === 0) {
+          throw new Error("Deprem verisi bulunamadı");
+        }
+        
+        // Process data for DataTable
+        const tableData = data.result.map(deprem => ({
+          date: new Date(deprem.date).toLocaleString(),
+          title: deprem.title,
+          mag: deprem.mag,
+          depth: deprem.depth + ' km',
+          detail: `<button class="btn btn-sm btn-outline-primary">Detay</button>`
+        }));
+        
+        // Initialize DataTable
+        $('#deprem-tablosu').DataTable({
+          data: tableData,
+          columns: [
+            { data: 'date', title: 'Tarih' },
+            { data: 'title', title: 'Lokasyon' },
+            { 
+              data: 'mag', 
+              title: 'Büyüklük',
+              render: function(data) {
+                const mag = parseFloat(data);
+                let color = '#91cf60'; // Green for small
+                if (mag > 4) color = '#fc8d59'; // Orange for medium
+                if (mag > 5) color = '#d73027'; // Red for large
+                
+                return `<span style="color: ${color}; font-weight: bold;">${data}</span>`;
+              }
+            },
+            { data: 'depth', title: 'Derinlik' },
+            
+          ],
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+          },
+          order: [[0, 'desc']],
+          stateSave: true
+         
+        });
+        
+        // Create earthquake cards
+        const cardContainer = document.getElementById('deprem-kartlari');
+        cardContainer.innerHTML = '';
+        
+        data.result.slice(0, 6).forEach(deprem => {
+          const mag = parseFloat(deprem.mag);
+          let cardClass = 'low';
+          if (mag > 4) cardClass = 'medium';
+          if (mag > 5) cardClass = 'critical';
+          
+          const card = document.createElement('div');
+          card.className = `earthquake-card ${cardClass}`;
+          card.innerHTML = `
+            <div class="earthquake-header">
+              <div>
+                <div class="earthquake-location">${deprem.title}</div>
+                <div class="earthquake-date">${new Date(deprem.date).toLocaleString()}</div>
+              </div>
+              <div class="earthquake-magnitude">${deprem.mag}</div>
+            </div>
+            <div class="earthquake-details">
+              <div class="earthquake-detail">
+                <i class="fas fa-ruler-vertical"></i>
+                <span>${deprem.depth} km</span>
+              </div>
+              <div class="earthquake-detail">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>${deprem.latitude}, ${deprem.longitude}</span>
+              </div>
+            </div>
+          `;
+          cardContainer.appendChild(card);
+        });
+        
+        // Create earthquake chart
+        const weeklyData = groupEarthquakesByDay(data.result);
+        createEarthquakeChart(weeklyData);
+        
+        // Add earthquake markers to map
+        data.result.forEach(deprem => {
+          const mag = parseFloat(deprem.mag);
+          let color = '#91cf60'; // Green for small
+          if (mag > 4) color = '#fc8d59'; // Orange for medium
+          if (mag > 5) color = '#d73027'; // Red for large
+          
+          const marker = L.circleMarker([deprem.latitude, deprem.longitude], {
+            radius: mag * 1.5,
+            fillColor: color,
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }).addTo(map);
+          
+          marker.bindPopup(`
+            <h3 style="color: ${color}; margin-bottom: 0.5rem;">${deprem.title}</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 4px 0; border-bottom: 1px solid #eee; font-weight: bold;">Büyüklük:</td>
+                <td style="padding: 4px 0; border-bottom: 1px solid #eee;">${deprem.mag}</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 0; border-bottom: 1px solid #eee; font-weight: bold;">Derinlik:</td>
+                <td style="padding: 4px 0; border-bottom: 1px solid #eee;">${deprem.depth} km</td>
+              </tr>
+              <tr>
+                <td style="padding: 4px 0; font-weight: bold;">Tarih:</td>
+                <td style="padding: 4px 0;">${new Date(deprem.date).toLocaleString()}</td>
+              </tr>
+            </table>
+          `);
+        });
+        
+      } catch (error) { 
+      }
+    }
+    
+    // Group earthquakes by day for chart
+    function groupEarthquakesByDay(earthquakes) {
+      const today = new Date();
+      const lastWeek = new Date(today);
+      lastWeek.setDate(today.getDate() - 7);
+      
+      const dateMap = {};
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(lastWeek);
+        date.setDate(lastWeek.getDate() + i);
+        const dateStr = date.toISOString().split('T')[0];
+        dateMap[dateStr] = 0;
+      }
+      
+      earthquakes.forEach(deprem => {
+        const depremDate = new Date(deprem.date).toISOString().split('T')[0];
+        if (dateMap.hasOwnProperty(depremDate)) {
+          dateMap[depremDate]++;
+        }
+      });
+      
+      return {
+        dates: Object.keys(dateMap).map(date => {
+          const d = new Date(date);
+          return `${d.getDate()} ${d.toLocaleString('tr-TR', {month: 'short'})}`;
+        }),
+        counts: Object.values(dateMap)
+      };
+    }
+    
+    // Create earthquake chart
+    function createEarthquakeChart(data) {
+      const options = {
+        series: [{
+          name: 'Deprem Sayısı',
+          data: data.counts
+        }],
+        chart: {
+          height: 350,
+          type: 'bar',
+          toolbar: {
+            show: false
+          }
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+            horizontal: false,
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        colors: ['#e74c3c'],
+        xaxis: {
+          categories: data.dates,
+        },
+        yaxis: {
+          title: {
+            text: 'Deprem Sayısı'
+          },
+          min: 0
+        },
+        tooltip: {
+          y: {
+            formatter: function(val) {
+              return val + " deprem";
+            }
+          }
+        }
+      };
+      
+      const chart = new ApexCharts(document.querySelector("#earthquake-chart"), options);
+      chart.render();
+    }
+    
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchEarthquakeData();
+      
+      // Contact form submission
+      document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Teşekkürler!',
+          text: 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapılacaktır.',
+          icon: 'success'
+        });
+        this.reset();
+      });
+    });
+    
+    
+  </script>
+  <script>
+  $(document).ready(function() {
+    $('#toplanmaAlanlari').DataTable({
+      stateSave: true, // <-- burada eklendi
+      language: {
+        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/tr.json'
+      }
+    });
+  });
+</script>
+
+
+  
+</body>
+</html>

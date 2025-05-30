@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afet Yönetim Bilgi Sistemi - Dashboard</title>
+    <link rel="icon" type="RESİMLER/x-icon" href="RESİMLER/AFET YÖNETİM BİLGİ SİSTEMİ kopyası.jpg">
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #27ae60;
+            --info-color: #2980b9;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: var(--shadow);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 500;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 20px;
+            padding: 5px 15px;
+            border: 1px solid #ddd;
+        }
+        
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+        
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+        }
+        
+        .disaster-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .badge-earthquake {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .badge-fire {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        .badge-flood {
+            background-color: rgba(41, 128, 185, 0.2);
+            color: var(--info-color);
+        }
+        
+        .badge-landslide {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .status-active {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+        
+        .status-past {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: var(--warning-color);
+        }
+        
+        #earthquake-monthly-chart {
+            height: 400px;
+            margin: 20px auto;
+            max-width: 1200px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Afet Yönetim Bilgi Sistemi</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="fas fa-home"></i> Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Toplam Afet</h6>
+                                <h3 class="mb-0">124</h3>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-exclamation-triangle text-danger fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Aktif Afet</h6>
+                                <h3 class="mb-0">18</h3>
+                            </div>
+                            <div class="bg-warning bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-fire text-warning fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Son 7 Gün</h6>
+                                <h3 class="mb-0">12</h3>
+                            </div>
+                            <div class="bg-info bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-water text-info fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Yardım Talebi</h6>
+                                <h3 class="mb-0">56</h3>
+                            </div>
+                            <div class="bg-success bg-opacity-10 p-3 rounded">
+                                <i class="fas fa-hands-helping text-success fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Son 6 Aylık Afet Dağılımı</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="disasterTrendChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Afet Türü Dağılımı</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="disasterTypeChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Charts Row -->
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Bölgelere Göre Afet Sayısı</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="regionChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-area me-2"></i>Yıllık Afet İstatistikleri</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="yearlyChart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 12 Aylık Deprem Grafiği -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Yıllık Deprem Dağılımı</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="earthquake-monthly-chart" class="chart-container" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Afet Yönetim Bilgi Sistemi</h5>
+                    <p class="mb-0">Türkiye'deki afetleri takip etmek ve yönetmek için geliştirilmiş bir sistem.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="mb-0">© 2025 Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.5/dist/sweetalert2.all.min.js"></script>
+   
+    <script>
+        // DataTable Initialization
+        $(document).ready(function() {
+            $('#afetTable').DataTable({
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json'
+                }
+            });
+        });
+
+        // ECharts Initialization
+        const trendChart = echarts.init(document.getElementById('disasterTrendChart'));
+        const typeChart = echarts.init(document.getElementById('disasterTypeChart'));
+        const regionChart = echarts.init(document.getElementById('regionChart'));
+        const yearlyChart = echarts.init(document.getElementById('yearlyChart'));
+        const monthlyChart = echarts.init(document.getElementById('earthquake-monthly-chart'));
+
+        // Disaster Trend Chart
+        const trendOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['Deprem', 'Yangın', 'Sel', 'Heyelan']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: 'Deprem',
+                    type: 'bar',
+                    stack: 'total',
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [12, 15, 18, 22, 25, 20],
+                    itemStyle: {
+                        color: '#e74c3c'
+                    }
+                },
+                {
+                    name: 'Yangın',
+                    type: 'bar',
+                    stack: 'total',
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [5, 8, 10, 12, 15, 18],
+                    itemStyle: {
+                        color: '#f39c12'
+                    }
+                },
+                {
+                    name: 'Sel',
+                    type: 'bar',
+                    stack: 'total',
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [8, 10, 12, 15, 20, 15],
+                    itemStyle: {
+                        color: '#2980b9'
+                    }
+                },
+                {
+                    name: 'Heyelan',
+                    type: 'bar',
+                    stack: 'total',
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [3, 5, 7, 10, 8, 6],
+                    itemStyle: {
+                        color: '#27ae60'
+                    }
+                }
+            ]
+        };
+
+        // Disaster Type Chart
+        const typeOption = {
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+            },
+            series: [
+                {
+                    name: 'Afet Dağılımı',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { value: 45, name: 'Deprem', itemStyle: { color: '#e74c3c' } },
+                        { value: 25, name: 'Yangın', itemStyle: { color: '#f39c12' } },
+                        { value: 20, name: 'Sel', itemStyle: { color: '#2980b9' } },
+                        { value: 10, name: 'Heyelan', itemStyle: { color: '#27ae60' } }
+                    ]
+                }
+            ]
+        };
+
+        // Region Chart
+        const regionOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value'
+            },
+            yAxis: {
+                type: 'category',
+                data: ['Marmara', 'Ege', 'Akdeniz', 'İç Anadolu', 'Karadeniz', 'Doğu Anadolu', 'Güneydoğu']
+            },
+            series: [
+                {
+                    name: 'Afet Sayısı',
+                    type: 'bar',
+                    data: [35, 25, 20, 15, 18, 12, 10],
+                    itemStyle: {
+                        color: function(params) {
+                            const colorList = ['#e74c3c', '#f39c12', '#2980b9', '#27ae60', '#9b59b6', '#34495e', '#1abc9c'];
+                            return colorList[params.dataIndex];
+                        }
+                    }
+                }
+            ]
+        };
+
+        // Yearly Chart
+        const yearlyOption = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['Deprem', 'Yangın', 'Sel', 'Heyelan']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['2020', '2021', '2022', '2023', '2024', '2025']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: 'Deprem',
+                    type: 'line',
+                    stack: 'Total',
+                    data: [120, 132, 101, 134, 90, 80],
+                    itemStyle: {
+                        color: '#e74c3c'
+                    },
+                    smooth: true
+                },
+                {
+                    name: 'Yangın',
+                    type: 'line',
+                    stack: 'Total',
+                    data: [80, 92, 91, 94, 110, 100],
+                    itemStyle: {
+                        color: '#f39c12'
+                    },
+                    smooth: true
+                },
+                {
+                    name: 'Sel',
+                    type: 'line',
+                    stack: 'Total',
+                    data: [60, 72, 71, 74, 90, 80],
+                    itemStyle: {
+                        color: '#2980b9'
+                    },
+                    smooth: true
+                },
+                {
+                    name: 'Heyelan',
+                    type: 'line',
+                    stack: 'Total',
+                    data: [40, 52, 51, 54, 60, 50],
+                    itemStyle: {
+                        color: '#27ae60'
+                    },
+                    smooth: true
+                }
+            ]
+        };
+        
+        // Monthly Earthquake Chart
+        const monthlyOption = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                },
+                formatter: '{b}<br/>Deprem Sayısı: {c}'
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                data: ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'],
+                axisLabel: {
+                    interval: 0,
+                    rotate: 45
+                }
+            },
+            yAxis: {
+                type: 'value',
+                name: 'Deprem Sayısı'
+            },
+            series: [{
+                name: 'Deprem',
+                type: 'bar',
+                data: [2657, 2568, 2414, 2223, 2302, 1858, 1817, 2078, 1768, 2202, 2301, 2180],
+                itemStyle: {
+                    color: function(params) {
+                        // Renk skalası - kırmızı tonları
+                        const colorList = [
+                            '#ff6b6b', '#ff7675', '#ff7675', '#ff7675', 
+                            '#ff7675', '#ff7675', '#ff7675', '#ff7675',
+                            '#ff7675', '#ff7675', '#ff7675', '#ff7675'
+                        ];
+                        return colorList[params.dataIndex];
+                    }
+                },
+                label: {
+                    show: true,
+                    position: 'top',
+                    formatter: '{c}'
+                }
+            }]
+        };
+
+        // Set charts options
+        trendChart.setOption(trendOption);
+        typeChart.setOption(typeOption);
+        regionChart.setOption(regionOption);
+        yearlyChart.setOption(yearlyOption);
+        monthlyChart.setOption(monthlyOption);
+
+        // Window resize event
+        window.addEventListener('resize', function() {
+            trendChart.resize();
+            typeChart.resize();
+            regionChart.resize();
+            yearlyChart.resize();
+            monthlyChart.resize();
+        });
+
+        // Refresh button click event
+        document.getElementById('refreshData').addEventListener('click', function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            
+            Toast.fire({
+                icon: 'success',
+                title: 'Veriler başarıyla yenilendi!'
+            });
+        });
+
+        // Detail button click events
+        document.querySelectorAll('.btn-outline-primary').forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const disasterName = row.cells[1].textContent;
+                
+                Swal.fire({
+                    title: disasterName,
+                    html: `
+                        <p><strong>Tarih:</strong> ${row.cells[2].textContent}</p>
+                        <p><strong>Konum:</strong> ${row.cells[3].textContent}</p>
+                        <p><strong>Şiddet:</strong> ${row.cells[4].textContent}</p>
+                        <p><strong>Durum:</strong> ${row.cells[5].textContent}</p>
+                    `,
+                    icon: 'info',
+                    confirmButtonText: 'Tamam'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

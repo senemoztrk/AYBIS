@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afet Yönetim Bilgi Sistemi - İhbar Modülü</title>
+    <link rel="icon" type="RESİMLER/x-icon" href="RESİMLER/AFET YÖNETİM BİLGİ SİSTEMİ kopyası.jpg">
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --success-color: #27ae60;
+            --info-color: #2980b9;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: var(--shadow);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 500;
+        }
+        
+        .btn-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            color: white;
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8)), 
+                        url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .risk-card {
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+        }
+        
+        .risk-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .risk-low {
+            border-left-color: var(--success-color);
+        }
+        
+        .risk-medium {
+            border-left-color: var(--warning-color);
+        }
+        
+        .risk-high {
+            border-left-color: var(--danger-color);
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--secondary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .status-pending {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--secondary-color);
+        }
+        
+        .status-inspected {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger-color);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Afet Yönetim Bilgi Sistemi</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container py-4">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="display-4 fw-bold">YAŞADIĞIN YER GÜVENDE Mİ?</h1>
+            <p class="lead">Konumunu bildir, uzmanlar kontrol etsin. İhbar et, hayati riskleri önceden fark et!</p>
+            <a href="#report-form" class="btn btn-light btn-lg mt-3">
+                <i class="fas fa-flag me-2"></i> Hemen İhbar Et
+            </a>
+        </div>
+
+        <!-- Report Form -->
+        <div class="card" id="report-form">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-edit me-2"></i>İhbar Formu</h5>
+            </div>
+            <div class="card-body">
+                <form id="riskReportForm">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-map-marker-alt me-2"></i>Konum Bilgileri</h5>
+                            <div id="map"></div>
+                            <div class="mt-3">
+                                <label for="name"  class="form-label">Ad-Soyad</label>
+                                <input type="text" class="form-control" id="name" placeholder="Ad-soyad giriniz" required>
+                                <label for="tel"  class="form-label">Telefon Numarası</label>
+                                <input type="tel" class="form-control" id="telefon" placeholder="Telefon numaranızı giriniz" required>
+
+                                <label for="email" class="form-label">E-mail</label>
+                                <input type="email" class="form-control" id="email" placeholder="E-posta bilgisini giriniz" required>
+                                <label for="address" class="form-label">Adres</label>
+                                <input type="text" class="form-control" id="address" placeholder="Tam adres bilgisini giriniz" required>
+                            </div>
+                            <div class="mt-3">
+                                <label for="district" class="form-label">Mahalle/Semt</label>
+                                <input type="text" class="form-control" id="district" required>
+                            </div>
+                            <div class="mt-3">
+                                <label for="city" class="form-label">İl/İlçe</label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-exclamation-circle me-2"></i>Risk Türü</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Risk Türünü Seçiniz (Birden fazla seçebilirsiniz)</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="risk-earthquake">
+                                    <label class="form-check-label" for="risk-earthquake">
+                                        <i class="fas fa-house-damage me-1"></i> Depreme Dayanıklılık Şüphesi
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="risk-fire">
+                                    <label class="form-check-label" for="risk-fire">
+                                        <i class="fas fa-fire me-1"></i> Yangına Karşı Güvensizlik
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="risk-flood">
+                                    <label class="form-check-label" for="risk-flood">
+                                        <i class="fas fa-water me-1"></i> Sel Riski (dere yatağı vb.)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="risk-structure">
+                                    <label class="form-check-label" for="risk-structure">
+                                        <i class="fas fa-building me-1"></i> Eski yapı / Çatlak / Rutubet
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="risk-other">
+                                    <label class="form-check-label" for="risk-other">
+                                        <i class="fas fa-ellipsis-h me-1"></i> Diğer tehlikeler
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="riskDescription" class="form-label">Risk Açıklaması</label>
+                                <textarea class="form-control" id="riskDescription" rows="3" placeholder="Gözlemlediğiniz riskleri detaylı şekilde açıklayınız. Örnek: 'Binada derin çatlaklar var, 30 yıllık yapı.'"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Fotoğraf/Video Ekle</label>
+                                <div class="file-upload">
+                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                    <h5>Dosyalarınızı sürükleyip bırakın veya tıklayarak seçin</h5>
+                                    <p class="text-muted">Maksimum 5 dosya (jpg, png, mp4)</p>
+                                    <input type="file" id="fileUpload" class="d-none" multiple accept="image/*,video/*">
+                                </div>
+                                <div id="filePreview" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-custom btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i> İhbarı Gönder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i>Nasıl Çalışır?</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-4">
+                        <div class="p-3">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-edit fa-2x text-primary"></i>
+                            </div>
+                            <h5 class="mt-3">1. İhbarı Oluştur</h5>
+                            <p class="text-muted">Konum ve risk bilgilerini girerek ihbar oluştur</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="p-3">
+                            <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-search fa-2x text-warning"></i>
+                            </div>
+                            <h5 class="mt-3">2. Uzman İncelemesi</h5>
+                            <p class="text-muted">Yetkili ekipler tarafından değerlendirilir</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="p-3">
+                            <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <h5 class="mt-3">3. Sonuç Bildirimi</h5>
+                            <p class="text-muted">İnceleme sonucu size bildirilir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Reports -->
+        <div class="card mt-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Son İhbarlar</h5>
+                <a href="#" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card risk-card risk-high h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="status-badge status-pending">İncelemede</span>
+                                    <small class="text-muted">2 gün önce</small>
+                                </div>
+                                <h5 class="card-title">Deprem Riski</h5>
+                                <p class="card-text">Binanın temelinde derin çatlaklar var. 40 yıllık yapı.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-danger">Yüksek Risk</span>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">Detay</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card risk-card risk-medium h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="status-badge status-inspected">İncelendi</span>
+                                    <small class="text-muted">1 hafta önce</small>
+                                </div>
+                                <h5 class="card-title">Yangın Riski</h5>
+                                <p class="card-text">Elektrik tesisatı eski ve yangın çıkışı yok.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-warning text-dark">Orta Risk</span>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">Detay</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card risk-card risk-low h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="status-badge status-inspected">İncelendi</span>
+                                    <small class="text-muted">2 hafta önce</small>
+                                </div>
+                                <h5 class="card-title">Sel Riski</h5>
+                                <p class="card-text">Dere yatağına yakın ancak yeterli önlem alınmış.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-success">Düşük Risk</span>
+                                    <a href="#" class="btn btn-sm btn-outline-primary">Detay</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 mt-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Afet Yönetim Bilgi Sistemi</h5>
+                    <p class="mb-0">Türkiye'deki afet risklerini önceden tespit etmek için geliştirilmiş ihbar sistemi.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="mb-0">© 2025 Tüm hakları saklıdır.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.5/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        // Harita Başlatma
+        const map = L.map('map').setView([39.9208, 32.8541], 6); // Türkiye merkezli harita
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Konum bulucu
+        const locateControl = L.control.locate({
+            position: 'topright',
+            drawCircle: true,
+            follow: true,
+            setView: 'once',
+            keepCurrentZoomLevel: true,
+            markerStyle: {
+                weight: 1,
+                opacity: 0.8,
+                fillOpacity: 0.8
+            },
+            circleStyle: {
+                weight: 1,
+                clickable: false
+            },
+            icon: 'fa fa-map-marker-alt',
+            metric: true,
+            strings: {
+                title: "Mevcut konumumu göster",
+                popup: "Şu an buradasınız",
+                outsideMapBoundsMsg: "Harita sınırları dışında görünüyorsunuz"
+            },
+            locateOptions: {
+                maxZoom: 16,
+                watch: true,
+                enableHighAccuracy: true,
+                maximumAge: 10000,
+                timeout: 10000
+            }
+        }).addTo(map);
+        
+        // Dosya yükleme işlevselliği
+        document.querySelector('.file-upload').addEventListener('click', function() {
+            document.getElementById('fileUpload').click();
+        });
+        
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const filePreview = document.getElementById('filePreview');
+            filePreview.innerHTML = '';
+            
+            if (files.length > 5) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Çok fazla dosya',
+                    text: 'Maksimum 5 dosya yükleyebilirsiniz'
+                });
+                return;
+            }
+            
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                const file = files[i];
+                const fileType = file.type.split('/')[0];
+                
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'd-flex align-items-center mb-2 p-2 bg-light rounded';
+                
+                if (fileType === 'image') {
+                    previewDiv.innerHTML = `
+                        <i class="fas fa-image me-2 text-primary"></i>
+                        <span class="small">${file.name}</span>
+                        <button class="btn btn-sm btn-outline-danger ms-auto remove-file" data-index="${i}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                } else if (fileType === 'video') {
+                    previewDiv.innerHTML = `
+                        <i class="fas fa-video me-2 text-danger"></i>
+                        <span class="small">${file.name}</span>
+                        <button class="btn btn-sm btn-outline-danger ms-auto remove-file" data-index="${i}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                } else {
+                    previewDiv.innerHTML = `
+                        <i class="fas fa-file me-2 text-secondary"></i>
+                        <span class="small">${file.name}</span>
+                        <button class="btn btn-sm btn-outline-danger ms-auto remove-file" data-index="${i}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                }
+                
+                filePreview.appendChild(previewDiv);
+            }
+        });
+        
+        // Form gönderimi
+        document.getElementById('riskReportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'İhbarınız alındı!',
+                html: `
+                    <p>İhbarınız başarıyla kaydedildi. Takip numaranız: <strong>AYB-${Math.floor(100000 + Math.random() * 900000)}</strong></p>
+                    <p>Yetkili ekipler tarafından en kısa sürede değerlendirilecektir.</p>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Tamam'
+            }).then(() => {
+                // Formu temizle
+                this.reset();
+                document.getElementById('filePreview').innerHTML = '';
+            });
+        });
+        
+        // Haritada tıklama ile konum seçme
+        map.on('click', function(e) {
+            // Önceki işaretçiyi temizle
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            // Yeni işaretçi ekle
+            const marker = L.marker(e.latlng).addTo(map);
+            
+            // Adres bilgisini güncelle (basit bir örnek)
+            document.getElementById('address').value = `Enlem: ${e.latlng.lat.toFixed(4)}, Boylam: ${e.latlng.lng.toFixed(4)}`;
+            
+            // Burada gerçek bir ters jeokodlama API'si kullanılabilir
+            // Örneğin: OpenStreetMap Nominatim API
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYBİS | Kayıt Ol</title>
+  <link rel="icon" type="RESİMLER/x-icon" href="RESİMLER/AFET YÖNETİM BİLGİ SİSTEMİ kopyası.jpg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #003366;
+      --accent: #00aaff;
+      --light-bg: #f0f8ff;
+      --white: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 85, 170, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: var(--light-bg);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .particles-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(circle at 20% 50%, rgba(0, 170, 255, 0.1), transparent 30%),
+                  radial-gradient(circle at 80% 70%, rgba(0, 51, 102, 0.1), transparent 30%);
+      animation: particlesAnim 15s linear infinite;
+    }
+    
+    .register-container {
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      background: var(--white);
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      transform: scale(0.95);
+      opacity: 0;
+      animation: scaleIn 0.5s ease-out forwards;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .register-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .logo img {
+      height: 200px;
+      width: auto;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover img {
+      transform: rotate(5deg);
+    }
+    
+    h2 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-group {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    
+    .input-group.full-width {
+      grid-column: span 2;
+    }
+    
+    .input-group i {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      color: var(--primary);
+      transition: all 0.3s ease;
+    }
+    
+    .input-group input, 
+    .input-group select,
+    .input-group textarea {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background-color: #f9f9f9;
+    }
+    
+    .input-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .input-group input:focus,
+    .input-group select:focus,
+    .input-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.2);
+      outline: none;
+      background-color: var(--white);
+    }
+    
+    .input-group input:focus + i,
+    .input-group select:focus + i,
+    .input-group textarea:focus + i {
+      color: var(--accent);
+      transform: scale(1.1);
+    }
+    
+    /* Select özel stil */
+    .input-group select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003366' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 15px;
+    }
+    
+    .input-group select:disabled {
+      background-color: #f0f0f0;
+      opacity: 0.7;
+    }
+    
+    .terms {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 14px;
+    }
+    
+    .terms input {
+      margin-right: 8px;
+    }
+    
+    .terms a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    
+    .terms a:hover {
+      text-decoration: underline;
+    }
+    
+    .register-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, var(--primary), var(--accent));
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .register-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 50%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(30deg);
+      transition: all 0.3s ease;
+    }
+    
+    .register-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 170, 255, 0.3);
+    }
+    
+    .register-btn:hover::after {
+      left: 110%;
+    }
+    
+    .login-link {
+      text-align: center;
+      color: #666;
+    }
+    
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Animations */
+    @keyframes particlesAnim {
+      0% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(20px, 20px);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+    
+    @keyframes scaleIn {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Password strength meter */
+    .password-strength {
+      height: 5px;
+      background: #eee;
+      border-radius: 5px;
+      margin-top: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .strength-meter {
+      height: 100%;
+      width: 0;
+      background: #e74c3c;
+      transition: all 0.3s ease;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .input-group.full-width {
+        grid-column: span 1;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .register-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+      
+      .logo img {
+        height: 50px;
+      }
+      
+      .input-group i {
+        top: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="particles-bg"></div>
+  
+  <div class="register-container">
+    <div class="logo">
+      <img src="RESİMLER/2.png" alt="AYBİS Logo">
+    </div>
+    
+    <h2>Hesap Oluştur</h2>
+    
+    <form id="registerForm">
+      <div class="form-grid">
+        <!-- Ad ve Soyad -->
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" placeholder="Ad" required>
+        </div>
+        
+        <div class="input-group">
+          <i class="fas fa-user"></i>
+          <input type="text" placeholder="Soyad" required>
+        </div>
+
+         <!-- Doğum Tarihi-->
+         <div class="input-group full-width">
+          <i class="fas fa-calendar-alt"></i>
+          <input type="date" placeholder="Doğum Tarihi" required>
+        </div>
+        
+        
+        <!-- E-posta ve Telefon -->
+        <div class="input-group full-width">
+          <i class="fas fa-envelope"></i>
+          <input type="email" placeholder="E-posta Adresi" required>
+        </div>
+        
+        <div class="input-group full-width">
+          <i class="fas fa-phone"></i>
+          <input type="tel" placeholder="Telefon" required>
+        </div>
+        
+        <!-- Açık Adres -->
+        <div class="input-group full-width">
+          <i class="fas fa-map-marker-alt"></i>
+          <textarea placeholder="Açık Adres (Mahalle, Sokak, No, Daire, Kat vb.)" required></textarea>
+        </div>
+        
+        <!-- İl ve İlçe -->
+        <div class="input-group">
+          <i class="fas fa-city"></i>
+          <select id="city" required>
+            <option value="" disabled selected>İl</option>
+            <option>Adana</option>
+<option>Adıyaman</option>
+<option>Afyonkarahisar</option>
+<option>Ağrı</option>
+<option>Aksaray</option>
+<option>Amasya</option>
+<option>Ankara</option>
+<option>Antalya</option>
+<option>Artvin</option>
+<option>Aydın</option>
+<option>Balıkesir</option>
+<option>Bartın</option>
+<option>Batman</option>
+<option>Bayburt</option>
+<option>Bilecik</option>
+<option>Bingöl</option>
+<option>Bitlis</option>
+<option>Bolu</option>
+<option>Burdur</option>
+<option>Bursa</option>
+<option>Çanakkale</option>
+<option>Çankırı</option>
+<option>Çorum</option>
+<option>Denizli</option>
+<option>Diyarbakır</option>
+<option>Düzce</option>
+<option>Edirne</option>
+<option>Elazığ</option>
+<option>Erzincan</option>
+<option>Erzurum</option>
+<option>Eskişehir</option>
+<option>Gaziantep</option>
+<option>Giresun</option>
+<option>Gümüşhane</option>
+<option>Hakkâri</option>
+<option>Hatay</option>
+<option>Iğdır</option>
+<option>Isparta</option>
+<option>İstanbul</option>
+<option>İzmir</option>
+<option>Kahramanmaraş</option>
+<option>Karabük</option>
+<option>Karaman</option>
+<option>Kars</option>
+<option>Kastamonu</option>
+<option>Kayseri</option>
+<option>Kırıkkale</option>
+<option>Kırklareli</option>
+<option>Kırşehir</option>
+<option>Kilis</option>
+<option>Kocaeli</option>
+<option>Konya</option>
+<option>Kütahya</option>
+<option>Malatya</option>
+<option>Manisa</option>
+<option>Mardin</option>
+<option>Mersin</option>
+<option>Muğla</option>
+<option>Muş</option>
+<option>Nevşehir</option>
+<option>Niğde</option>
+<option>Ordu</option>
+<option>Osmaniye</option>
+<option>Rize</option>
+<option>Sakarya</option>
+<option>Samsun</option>
+<option>Şanlıurfa</option>
+<option>Siirt</option>
+<option>Sinop</option>
+<option>Şırnak</option>
+<option>Sivas</option>
+<option>Tekirdağ</option>
+<option>Tokat</option>
+<option>Trabzon</option>
+<option>Tunceli</option>
+<option>Uşak</option>
+<option>Van</option>
+<option>Yalova</option>
+<option>Yozgat</option>
+<option>Zonguldak</option>
+
+            <!-- Diğer iller... -->
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <i class="fas fa-map-pin"></i>
+          <select id="district" required disabled>
+            <option value="" disabled selected>İlçe</option>
+          </select>
+        </div>
+        
+        <!-- Şifre Alanları -->
+        <div class="input-group full-width">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Şifre" required>
+          <div class="password-strength">
+            <div class="strength-meter" id="strengthMeter"></div>
+          </div>
+        </div>
+        
+        <div class="input-group full-width">
+          <i class="fas fa-lock"></i>
+          <input type="password" placeholder="Şifreyi Tekrar Girin" required>
+        </div>
+      </div>
+      
+      <div class="terms">
+        <input type="checkbox" id="terms" required>
+        <label for="terms"><a href="#">Kullanım koşullarını</a> okudum ve kabul ediyorum</label>
+      </div>
+      
+      <button type="submit" class="register-btn">Kayıt Ol</button>
+      
+      <div class="login-link">
+        Zaten hesabınız var mı? <a href="login.html">Giriş Yapın</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // İl-İlçe bağlantısı
+    const citySelect = document.getElementById('city');
+    const districtSelect = document.getElementById('district');
+    
+    // Türkiye ilçe verileri (örnek)
+    const districts = {
+    'Adana': ['Aladağ', 'Ceyhan', 'Çukurova', 'Feke', 'İmamoğlu', 'Karaisalı', 'Karataş', 'Kozan', 'Pozantı', 'Saimbeyli', 'Sarıçam', 'Seyhan', 'Tufanbeyli', 'Yumurtalık', 'Yüreğir'],
+    'Adıyaman': ['Besni', 'Çelikhan', 'Gerger', 'Gölbaşı', 'Kahta', 'Merkez', 'Samsat', 'Sincik', 'Tut'],
+    'Afyonkarahisar': ['Başmakçı', 'Bayat', 'Bolvadin', 'Çay', 'Çobanlar', 'Dazkırı', 'Dinar', 'Emirdağ', 'Evciler', 'Hocalar', 'İhsaniye', 'İscehisar', 'Kızılören', 'Sandıklı', 'Sinanpaşa', 'Sultandağı', 'Şuhut'],
+    'Ağrı': ['Diyadin', 'Doğubayazıt', 'Eleşkirt', 'Hamur', 'Merkez', 'Taşlıçay', 'Tutak'],
+    'Aksaray': ['Ağaçören', 'Eskil', 'Gülağaç', 'Güzelyurt', 'Merkez', 'Ortaköy', 'Sarıyahşi'],
+    'Amasya': ['Merzifon', 'Gümüşhacıköy', 'Hamamözü', 'Merkez', 'Suluova', 'Taşova'],
+    'Ankara': ['Akyurt', 'Altındağ', 'Ayaş', 'Bala', 'Beypazarı', 'Çamlıdere', 'Çankaya', 'Çubuk', 'Elmadağ', 'Etimesgut', 'Evren', 'Gölbaşı', 'Güdül', 'Haymana', 'Kalecik', 'Kahramankazan', 'Keçiören', 'Kızılcahamam', 'Mamak', 'Nallıhan', 'Polatlı', 'Pursaklar', 'Sincan', 'Şereflikoçhisar', 'Yenimahalle'],
+    'Antalya': ['Akseki', 'Aksu', 'Alanya', 'Döşemealtı', 'Elmalı', 'Finike', 'Gazipaşa', 'Gündoğmuş', 'İbradı', 'Demre', 'Kaş', 'Kemer', 'Kepez', 'Konyaaltı', 'Korkuteli', 'Kumluca', 'Manavgat', 'Muratpaşa', 'Serik'],
+    'Ardahan': ['Çıldır', 'Damala', 'Göle', 'Hanak', 'Merkez', 'Posof'],
+    'Artvin': ['Ardanuç', 'Arhavi', 'Borçka', 'Hopa', 'Murgul', 'Merkez', 'Şavşat', 'Yusufeli'],
+    'Aydın': ['Bozdoğan', 'Çine', 'Didim', 'Efeler', 'Germencik', 'İncirliova', 'Karacasu', 'Karpuzlu', 'Koçarlı', 'Köşk', 'Nazilli', 'Söke', 'Sultanhisar', 'Yenipazar'],
+    'Balıkesir': ['Altıeylül', 'Ayvalık', 'Balya', 'Bandırma', 'Bigadiç', 'Burhaniye', 'Dursunbey', 'Edremit', 'Erdek', 'Gömeç', 'Gönen', 'Havran', 'İvrindi', 'Karesi', 'Kepsut', 'Manyas', 'Marmara', 'Savaştepe', 'Sındırgı'],
+    'Bartın': ['Amasra', 'Kurucaşile', 'Merkez'],
+    'Batman': ['Beşiri', 'Gercüş', 'Kozluk', 'Merkez', 'Sason'],
+    'Bayburt': ['Aydıntepe', 'Demirözü', 'Merkez'],
+    'Bilecik': ['Bozüyük', 'Gölpazarı', 'Osmaneli', 'Pazaryeri', 'Söğüt', 'Yenipazar', 'Merkez'],
+    'Bingöl': ['Adaklı', 'Genç', 'Karlıova', 'Kiğı', 'Merkez', 'Solhan', 'Yayladere', 'Yedisu'],
+    'Bitlis': ['Adilcevaz', 'Ahlat', 'Güroymak', 'Hizan', 'Mutki', 'Tatvan', 'Merkez'],
+    'Bolu': ['Dörtdivan', 'Gerede', 'Göynük', 'Kıbrıscık', 'Mengen', 'Mudurnu', 'Seben', 'Merkez'],
+    'Burdur': ['Ağlasun', 'Bucak', 'Gölhisar', 'Kemer', 'Tefenni', 'Yeşilova', 'Merkez'],
+    'Bursa': ['Alaca', 'Büyükorhan', 'Gemlik', 'Gürsu', 'Harmancık', 'İnegöl', 'İznik', 'Karacabey', 'Keles', 'Kestel', 'Mudanya', 'Nilüfer', 'Orhaneli', 'Orhangazi', 'Osmangazi', 'Yıldırım', 'Mustafakemalpaşa'],
+    'Çanakkale': ['Ayvacık', 'Bayramiç', 'Biga', 'Bozcaada', 'Çan', 'Eceabat', 'Ezine', 'Gelibolu', 'Gökçeada', 'Lapseki', 'Merkez'],
+    'Çankırı': ['Atkaracalar', 'Bayramören', 'Çerkeş', 'Eldivan', 'Ilgaz', 'Kızılırmak', 'Korgun', 'Kurşunlu', 'Merkez', 'Orta', 'Şabanözü', 'Yapraklı'],
+    'Çorum': ['Alaca', 'Bayat', 'Boğazkale', 'Dodurga', 'İskilip', 'Kargı', 'Laçin', 'Mecitözü', 'Merkez', 'Oğuzlar', 'Ortaköy', 'Sungurlu', 'Uğurludağ'],
+    'Denizli': ['Acıpayam', 'Babadağ', 'Baklan', 'Bekilli', 'Buldan', 'Çal', 'Çameli', 'Çardak', 'Çivril', 'Merkezefendi', 'Pamukkale', 'Sarayköy', 'Serinhisar', 'Tavas'],
+    'Diyarbakır': ['Bağlar', 'Bismil', 'Çermik', 'Çınar', 'Çüngüş', 'Dicle', 'Eğil', 'Ergani', 'Hani', 'Hazro', 'Kocaköy', 'Kulp', 'Lice', 'Silvan', 'Sur', 'Merkez'],
+    'Düzce': ['Akçakoca', 'Cumayeri', 'Çilimli', 'Gölyaka', 'Gümüşova', 'Kaynaşlı', 'Yığılca', 'Merkez'],
+    'Edirne': ['Enez', 'Havsa', 'İpsala', 'Keşan', 'Lalapaşa', 'Meriç', 'Merkez', 'Süloğlu'],
+    'Elazığ': ['Ağın', 'Alacakaya', 'Arıcak', 'Baskil', 'Karakoçan', 'Keban', 'Kovancılar', 'Maden', 'Merkez', 'Palu', 'Sivrice'],
+    'Erzincan': ['Çayırlı', 'İliç', 'Kemah', 'Kemaliye', 'Merkez', 'Otlukbeli', 'Refahiye', 'Tercan', 'Üzümlü'],
+    'Erzurum': ['Aşkale', 'Çat', 'Hınıs', 'Horasan', 'İspir', 'Karaçoban', 'Karayazı', 'Narman', 'Olur', 'Pasinler', 'Pazaryolu', 'Şenkaya', 'Tekman', 'Tortum', 'Uzundere', 'Yakutiye', 'Palandöken', 'Aziziye'],
+    'Eskişehir': ['Alpu', 'Beylikova', 'Çifteler', 'Günyüzü', 'Han', 'İnönü', 'Mihalgazi', 'Mihalıççık', 'Odunpazarı', 'Sarıcakaya', 'Seyitgazi', 'Tepebaşı'],
+    'Gaziantep': ['Araban', 'İslahiye', 'Karkamış', 'Nizip', 'Nurdağı', 'Şahinbey', 'Şehitkamil', 'Yavuzeli'],
+    'Giresun': ['Alucra', 'Bulancak', 'Çamoluk', 'Çanakçı', 'Dereli', 'Espiye', 'Eynesil', 'Merkez', 'Görele', 'Keşap', 'Piraziz', 'Şebinkarahisar', 'Tirebolu', 'Yağlıdere'],
+    'Gümüşhane': ['Kelkit', 'Köse', 'Kürtün', 'Şiran', 'Merkez'],
+    'Hakkari': ['Çukurca', 'Şemdinli', 'Yüksekova', 'Merkez'],
+    'Hatay': ['Altınözü', 'Arsuz', 'Defne', 'Dörtyol', 'Erzin', 'Hassa', 'İskenderun', 'Kırıkhan', 'Payas', 'Reyhanlı', 'Samandağ', 'Yayladağı', 'Antakya'],
+    'Iğdır': ['Aralık', 'Karakoyunlu', 'Merkez', 'Tuzluca'],
+    'Isparta': ['Aksu', 'Atabey', 'Eğirdir', 'Gelendost', 'Gönen', 'Keçiborlu', 'Merkez', 'Senirkent', 'Sütçüler', 'Şarkikaraağaç', 'Yalvaç', 'Yenişarbademli'],
+    'İstanbul': ['Adalar', 'Arnavutköy', 'Ataşehir', 'Avcılar', 'Bağcılar', 'Bahçelievler', 'Bakırköy', 'Başakşehir', 'Bayrampaşa', 'Beşiktaş', 'Beykoz', 'Beylikdüzü', 'Beyoğlu', 'Büyükçekmece', 'Çatalca', 'Çekmeköy', 'Esenler', 'Esenyurt', 'Eyüpsultan', 'Fatih', 'Gaziosmanpaşa', 'Güngören', 'Kadıköy', 'Kağıthane', 'Kartal', 'Küçükçekmece', 'Maltepe', 'Pendik', 'Sancaktepe', 'Sarıyer', 'Silivri', 'Sultanbeyli', 'Sultangazi', 'Şile', 'Şişli', 'Tuzla', 'Ümraniye', 'Üsküdar', 'Zeytinburnu'],
+    'İzmir': ['Aliağa', 'Balçova', 'Bayındır', 'Bayraklı', 'Bergama', 'Beydağ', 'Bornova', 'Buca', 'Çeşme', 'Çiğli', 'Dikili', 'Foça', 'Gaziemir', 'Güzelbahçe', 'Karabağlar', 'Karaburun', 'Karşıyaka', 'Kemalpaşa', 'Konak', 'Menderes', 'Menemen', 'Narlıdere', 'Ödemiş', 'Seferihisar', 'Selçuk', 'Tire', 'Torbalı', 'Urla'],
+    'Kahramanmaraş': ['Afşin', 'Andırın', 'Çağlayancerit', 'Dulkadiroğlu', 'Ekinözü', 'Elbistan', 'Göksun', 'Nurhak', 'Onikişubat', 'Pazarcık', 'Türkoğlu'],
+    'Karabük': ['Eskipazar', 'Merkez', 'Ovacık', 'Safranbolu', 'Yenice'],
+    'Karaman': ['Ayrancı', 'Ermenek', 'Merkez', 'Kazımkarabekir'],
+    'Kars': ['Akyaka', 'Arpaçay', 'Digor', 'Kağızman', 'Merkez', 'Sarıkamış', 'Selim', 'Susuz'],
+    'Kastamonu': ['Abana', 'Araç', 'Azdavay', 'Bozkurt', 'Cide', 'Çatalzeytin', 'Daday', 'Devrekani', 'İnebolu', 'Küre', 'Merkez', 'Şenpazar', 'Taşköprü', 'Tosya'],
+    'Kayseri': ['Akkışla', 'Bünyan', 'Develi', 'Felahiye', 'İncesu', 'Pınarbaşı', 'Sarıoğlan', 'Sarız', 'Talas', 'Tomarza', 'Yahyalı', 'Yeşilhisar', 'Kocasinan', 'Melikgazi'],
+    'Kilis': ['Merkez', 'Elbeyli', 'Musabeyli', 'Polateli'],
+    'Kırıkkale': ['Bahşili', 'Balışeyh', 'Çelebi', 'Delice', 'Karakeçili', 'Keskin', 'Merkez', 'Sulakyurt', 'Yahşihan'],
+    'Kırklareli': ['Babaeski', 'Demirköy', 'Kofçaz', 'Lüleburgaz', 'Merkez', 'Pehlivanköy', 'Pınarhisar', 'Vize'],
+    'Kırşehir': ['Akpınar', 'Akçakent', 'Boztepe', 'Çiçekdağı', 'Kaman', 'Merkez'],
+    'Kocaeli': ['Başiskele', 'Çayırova', 'Derince', 'Dilovası', 'Gebze', 'Gölcük', 'Kandıra', 'Karamürsel', 'Körfez', 'İzmit'],
+    'Konya': ['Ahırlı', 'Akşehir', 'Altınekin', 'Beyşehir', 'Bozkır', 'Cihanbeyli', 'Çeltik', 'Çumra', 'Derbent', 'Derebucak', 'Doğanhisar', 'Emirgazi', 'Ereğli', 'Güneysınır', 'Hadim', 'Halkapınar', 'Hüyük', 'Ilgın', 'Kadınhanı', 'Karapınar', 'Karatay', 'Kulu', 'Meram', 'Sarayönü', 'Selçuklu', 'Seydişehir', 'Taşkent', 'Yalıhüyük', 'Yunak'],
+    'Kütahya': ['Altıntaş', 'Aslanapa', 'Çavdarhisar', 'Domaniç', 'Dumlupınar', 'Emet', 'Gediz', 'Merkez', 'Pazarlar', 'Şaphane', 'Simav', 'Tavşanlı'],
+    'Malatya': ['Akçadağ', 'Arapgir', 'Arguvan', 'Battalgazi', 'Darende', 'Doğanşehir', 'Hekimhan', 'Kuluncak', 'Pötürge', 'Yazıhan', 'Yeşilyurt'],
+    'Manisa': ['Ahmetli', 'Akhisar', 'Alaşehir', 'Demirci', 'Gördes', 'Kırkağaç', 'Köprübaşı', 'Salihli', 'Sarıgöl', 'Saruhanlı', 'Şehzadeler', 'Selendi', 'Soma', 'Turgutlu', 'Yunusemre'],
+    'Mardin': ['Derik', 'Dargeçit', 'Kızıltepe', 'Mazıdağı', 'Midyat', 'Nusaybin', 'Savur', 'Artuklu', 'Ömerli'],
+    'Mersin': ['Akdeniz', 'Anamur', 'Aydıncık', 'Bozyazı', 'Çamlıyayla', 'Erdemli', 'Gülnar', 'Mezitli', 'Mut', 'Silifke', 'Tarsus', 'Toroslar', 'Yenişehir'],
+    'Muğla': ['Bodrum', 'Datça', 'Fethiye', 'Kavaklıdere', 'Marmaris', 'Menteşe', 'Milas', 'Ortaca', 'Ula', 'Yatağan'],
+    'Muş': ['Bulanık', 'Hasköy', 'Korkut', 'Malazgirt', 'Merkez', 'Varto'],
+    'Nevşehir': ['Acıgöl', 'Avanos', 'Derinkuyu', 'Gülşehir', 'Hacıbektaş', 'Kozaklı', 'Merkez'],
+    'Niğde': ['Altunhisar', 'Bor', 'Çamardı', 'Merkez', 'Ulukışla'],
+    'Ordu': ['Akkuş', 'Altınordu', 'Aybastı', 'Fatsa', 'Gölköy', 'Gülyalı', 'Gürgentepe', 'İkizce', 'Kabadüz', 'Kabataş', 'Korgan', 'Kumru', 'Mesudiye', 'Perşembe', 'Ulubey', 'Ünye'],
+    'Osmaniye': ['Bahçe', 'Düziçi', 'Hasanbeyli', 'Kadirli', 'Merkez', 'Sumbas', 'Toprakkale'],
+    'Rize': ['Ardeşen', 'Çamlıhemşin', 'Çayeli', 'Fındıklı', 'Güneysu', 'İkizdere', 'Kalkandere', 'Pazar', 'Merkez'],
+    'Sakarya': ['Adapazarı', 'Akyazı', 'Arifiye', 'Erenler', 'Ferizli', 'Geyve', 'Hendek', 'Karapürçek', 'Karasu', 'Kaynarca', 'Kocaali', 'Pamukova', 'Sapanca', 'Serdivan', 'Söğütlü', 'Taraklı'],
+    'Samsun': ['Alaçam', 'Asarcık', 'Atakum', 'Ayvacık', 'Bafra', 'Çarşamba', 'Havza', 'Kavak', 'Ladik', 'Ondokuzmayıs', 'Salıpazarı', 'Tekkeköy', 'Terme', 'Vezirköprü', 'Yakakent'],
+    'Siirt': ['Baykan', 'Eruh', 'Kurtalan', 'Pervari', 'Şirvan', 'Merkez'],
+    'Sinop': ['Ayancık', 'Boyabat', 'Dikmen', 'Durağan', 'Erfelek', 'Merkez', 'Saraydüzü', 'Türkeli'],
+    'Sivas': ['Akıncılar', 'Altınyayla', 'Divriği', 'Doğanşar', 'Gemerek', 'Gölova', 'Gürün', 'Hafik', 'İmranlı', 'Kangal', 'Koyulhisar', 'Merkez', 'Suşehri', 'Şarkışla', 'Ulaş', 'Yıldızeli', 'Zara'],
+    'Şanlıurfa': ['Akçakale', 'Birecik', 'Bozova', 'Ceylanpınar', 'Eyyübiye', 'Halfeti', 'Haliliye', 'Harran', 'Hilvan', 'Karaköprü', 'Siverek', 'Suruç', 'Viranşehir'],
+    'Şırnak': ['Beytüşşebap', 'Cizre', 'Güçlükonak', 'İdil', 'Silopi', 'Uludere', 'Merkez'],
+    'Tekirdağ': ['Çerkezköy', 'Çorlu', 'Ergene', 'Hayrabolu', 'Malkara', 'Marmaraereğlisi', 'Muratlı', 'Saray', 'Süleymanpaşa', 'Şarköy'],
+    'Tokat': ['Almus', 'Artova', 'Erbaa', 'Niksar', 'Pazar', 'Reşadiye', 'Sulusaray', 'Turhal', 'Yeşilyurt', 'Merkez'],
+    'Trabzon': ['Akçaabat', 'Araklı', 'Arsin', 'Beşikdüzü', 'Çarşıbaşı', 'Çaykara', 'Dernekpazarı', 'Düzköy', 'Hayrat', 'Köprübaşı', 'Maçka', 'Of', 'Ortahisar', 'Sürmene', 'Şalpazarı', 'Tonya', 'Vakfıkebir', 'Yomra'],
+    'Tunceli': ['Çemişgezek', 'Hozat', 'Mazgirt', 'Nazımiye', 'Ovacık', 'Pertek', 'Pülümür', 'Merkez'],
+    'Uşak': ['Banaz', 'Eşme', 'Karahallı', 'Sivaslı', 'Ulubey', 'Merkez'],
+    'Van': ['Başkale', 'Çaldıran', 'Çatak', 'Edremit', 'Erciş', 'Gevaş', 'Gürpınar', 'İpekyolu', 'Muradiye', 'Özalp', 'Tuşba'],
+    'Yalova': ['Altınova', 'Armutlu', 'Çınarcık', 'Çiftlikköy', 'Merkez'],
+    'Yozgat': ['Akdağmadeni', 'Boğazlıyan', 'Çandır', 'Çayıralan', 'Çekerek', 'Sarıkaya', 'Sorgun', 'Şefaatli', 'Yenifakılı', 'Merkez'],
+    'Zonguldak': ['Alaplı', 'Çaycuma', 'Devrek', 'Ereğli', 'Gökçebey', 'Merkez']
+}
+
+      
+    
+    
+    citySelect.addEventListener('change', function() {
+      const selectedCity = this.value;
+      districtSelect.innerHTML = '<option value="" disabled selected>İlçe</option>';
+      
+      if (selectedCity && districts[selectedCity]) {
+        districtSelect.disabled = false;
+        districts[selectedCity].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      } else {
+        districtSelect.disabled = true;
+      }
+    });
+    
+    // Şifre güçlülük göstergesi
+    const passwordInput = document.getElementById('password');
+    const strengthMeter = document.getElementById('strengthMeter');
+    
+    passwordInput.addEventListener('input', function() {
+      const password = this.value;
+      let strength = 0;
+      
+      // Uzunluk kontrolü
+      if (password.length > 7) strength += 25;
+      
+      // Küçük harf kontrolü
+      if (/[a-z]/.test(password)) strength += 25;
+      
+      // Büyük harf kontrolü
+      if (/[A-Z]/.test(password)) strength += 25;
+      
+      // Sayı/özel karakter kontrolü
+      if (/[0-9!@#$%^&*]/.test(password)) strength += 25;
+      
+      // Göstergenin güncellenmesi
+      strengthMeter.style.width = strength + '%';
+      
+      // Renk değişimi
+      if (strength < 50) {
+        strengthMeter.style.backgroundColor = '#e74c3c'; // Kırmızı
+      } else if (strength < 75) {
+        strengthMeter.style.backgroundColor = '#f39c12'; // Turuncu
+      } else {
+        strengthMeter.style.backgroundColor = '#2ecc71'; // Yeşil
+      }
+    });
+    
+    // Form gönderimi
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = this.querySelector('.register-btn');
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt Olunuyor...';
+      submitBtn.disabled = true;
+      
+      // Simüle edilmiş API isteği
+      setTimeout(() => {
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Kayıt Başarılı!';
+        
+        // Yönlendirme
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      }, 2000);
+    });
+    
+    // Input focus efektleri
+    document.querySelectorAll('.input-group input, .input-group select, .input-group textarea').forEach(input => {
+      const icon = input.parentElement.querySelector('i');
+      
+      input.addEventListener('focus', function() {
+        icon.style.color = '#00aaff';
+        icon.style.transform = 'scale(1.1)';
+      });
+      
+      input.addEventListener('blur', function() {
+        icon.style.color = '#003366';
+        icon.style.transform = 'scale(1)';
+      });
+    });
+  </script>
+</body>
+</html>
